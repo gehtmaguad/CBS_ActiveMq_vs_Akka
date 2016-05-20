@@ -16,7 +16,7 @@ public class Creator extends UntypedActor {
 	private ActorRef workers;
 	private ActorRef collector;
 
-	public Creator(int start_value, int end_value, int actor_count) {
+	public Creator(final long start_time, int start_value, int end_value, final int actor_count) {
 
 		// initialize variables
 		this.start_value = start_value;
@@ -26,8 +26,14 @@ public class Creator extends UntypedActor {
 		// calculate the number of elements being calculated by each consumer
 		this.number_of_elements = this.end_value / this.actor_count;
 
-		collector = this.getContext().actorOf(new Props(Collector.class), "collector");
+		// create the collector actor
+		collector = this.getContext().actorOf(new Props(new UntypedActorFactory() {
+			public UntypedActor create() {
+				return new Collector(start_time, actor_count);
+			}
+		}),"collector");
 
+		// create the worker actors by using a roundrobinrouter
 		workers = this.getContext().actorOf(new Props(new UntypedActorFactory() {
 			public UntypedActor create() {
 				return new Worker(collector);

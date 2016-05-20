@@ -23,14 +23,8 @@ public class Worker implements Runnable {
 	private Destination destinationWorker; // destination object
 	private int active_for_minutes = 60; // defines how long the consumer runs
 	private MessageConsumer consumer; // consumer object
-	private static int worker_id = 0;
-
-	public Worker() throws Exception {
-
-		// every worker has its own id by implementing static counter
-		++worker_id;
-		System.out.println("Creating new worker with id: " + worker_id);
-		
+	
+	public Worker() throws Exception {		
 		// create a ActiveMQConnection Factory instance
 		connectionFactory = new ActiveMQConnectionFactory(messageBrokerUrl);
 		// create connection to the message broker
@@ -61,7 +55,6 @@ public class Worker implements Runnable {
 	// execution method
 	public void run() {
 		try {
-			System.out.println("Worker started with id: " + worker_id);
 			// create a listener
 			consumer.setMessageListener(new WorkerListener());
 			TimeUnit.MINUTES.sleep(active_for_minutes);

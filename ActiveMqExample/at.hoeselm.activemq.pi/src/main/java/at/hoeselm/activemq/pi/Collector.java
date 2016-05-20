@@ -22,8 +22,10 @@ public class Collector implements Runnable {
 	private Destination destinationSum; // destination object
 	private int active_for_minutes = 60; // defines how long the consumer runs
 	private MessageConsumer consumer; // consumer object
+	private int message_count;
+	private long start_time;
 
-	public Collector() throws Exception {
+	public Collector(long start_time, int message_count) throws Exception {
 
 		// create a ActiveMQConnection Factory instance
 		connectionFactory = new ActiveMQConnectionFactory(messageBrokerUrl);
@@ -38,6 +40,9 @@ public class Collector implements Runnable {
 
 		// create a message consumer using the session object
 		consumer = session.createConsumer(destinationSum);
+		
+		this.message_count = message_count;
+		this.start_time = start_time;
 	}
 
 	// termination method, run after execution
@@ -56,7 +61,7 @@ public class Collector implements Runnable {
 	public void run() {
 		try {
 			// create a listener
-			consumer.setMessageListener(new CollectorListener());
+			consumer.setMessageListener(new CollectorListener(start_time, message_count));
 			TimeUnit.MINUTES.sleep(active_for_minutes);
 			connection.stop();
 		} catch (Exception ex) {

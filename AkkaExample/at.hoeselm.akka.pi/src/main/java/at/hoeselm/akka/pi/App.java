@@ -9,11 +9,13 @@ import akka.actor.UntypedActorFactory;
 public class App {
 
 	public static void main(String[] args) {
+		
+		final long start_time = System.nanoTime();
 
 		// define parameters for execution
 		final int start_value = 0;
 		final int end_value = 10000000;
-		final int message_count = 1000;
+		final int actor_count = 10;
 		
 		// Create an Akka system
 		ActorSystem system = ActorSystem.create("PiCalculation");
@@ -21,7 +23,7 @@ public class App {
 		// Create a creator actor
 		ActorRef creator = system.actorOf(new Props(new UntypedActorFactory() {
 			public UntypedActor create() {
-				return new Creator(start_value, end_value, message_count);
+				return new Creator(start_time, start_value, end_value, actor_count);
 			}
 		}), "creator");
 
