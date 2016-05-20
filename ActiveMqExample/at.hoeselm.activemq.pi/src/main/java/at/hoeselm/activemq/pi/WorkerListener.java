@@ -79,7 +79,7 @@ public class WorkerListener implements MessageListener {
         int start_value = worker_message.get_start_value();
         int number_of_elements = worker_message.get_number_of_elements();
 		double sum = 0.0;
-		
+
 		for(int i = start_value * number_of_elements;
 			i<= ((start_value + 1) * number_of_elements - 1); i++ ) {
 			

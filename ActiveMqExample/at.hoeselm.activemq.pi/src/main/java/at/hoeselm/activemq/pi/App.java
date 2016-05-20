@@ -9,8 +9,8 @@ public class App {
 			/** creator */
 			// define parameters for execution
 			int start_value = 0;
-			int end_value = 1000000000;
-			int message_count = 100;
+			int end_value = 10000000;
+			int message_count = 1000;
 
 			// create an instance of this class
 			(new Thread(new Creator(start_value, end_value, message_count))).start();

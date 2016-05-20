@@ -20,10 +20,7 @@ public class Collector extends UntypedActor {
 			++count;
 
 			// printout info statement
-			System.out.println("\n ---------------------------------------");
-			System.out.println("collector received message " + count );
-			System.out.println("pi is now : " + pi );
-			System.out.println("\n ---------------------------------------");
+			System.out.println("New calculation of pi occured because of message " + count + " ;Pi is now " + pi );
 
 			// listen for other messages and handle them as unhandled
 		} else {

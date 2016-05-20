@@ -10,32 +10,24 @@ public class App {
 
 	public static void main(String[] args) {
 
-		// print info
-		System.out.println("Starting Akka system");
+		// define parameters for execution
+		final int start_value = 0;
+		final int end_value = 10000000;
+		final int message_count = 1000;
 		
 		// Create an Akka system
 		ActorSystem system = ActorSystem.create("PiCalculation");
-
-		// print info
-		System.out.println("Creating creator actor");		
 		
 		// Create a creator actor
 		ActorRef creator = system.actorOf(new Props(new UntypedActorFactory() {
 			public UntypedActor create() {
-				return new Creator(0, 10000, 10);
+				return new Creator(start_value, end_value, message_count);
 			}
 		}), "creator");
 
 		// Start calculation
 		StartMessage start_message = new StartMessage();
-		
-		// print info
-		System.out.println("sending message to creator actor");	
-		
 		creator.tell(start_message);
-		
-		// print info
-		System.out.println("done starting app");			
 
 	}
 

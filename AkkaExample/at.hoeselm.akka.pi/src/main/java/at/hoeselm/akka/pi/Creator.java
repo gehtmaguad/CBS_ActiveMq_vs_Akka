@@ -18,15 +18,13 @@ public class Creator extends UntypedActor {
 
 	public Creator(int start_value, int end_value, int actor_count) {
 
-		// TODO: println statement
-		System.out.println("Creating Creator Actor");
-
+		// initialize variables
 		this.start_value = start_value;
 		this.end_value = end_value;
 		this.actor_count = actor_count;
 
 		// calculate the number of elements being calculated by each consumer
-		this.number_of_elements = end_value / actor_count;
+		this.number_of_elements = this.end_value / this.actor_count;
 
 		collector = this.getContext().actorOf(new Props(Collector.class), "collector");
 
@@ -55,9 +53,6 @@ public class Creator extends UntypedActor {
 
 				// send message
 				workers.tell(worker_message);
-
-				// printout info statement
-				System.out.println("creator sent message");
 
 			}
 
