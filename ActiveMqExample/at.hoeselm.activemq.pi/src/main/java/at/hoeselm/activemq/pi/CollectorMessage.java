@@ -2,14 +2,14 @@ package at.hoeselm.activemq.pi;
 
 import java.io.Serializable;
 
-public class SumMessage implements Serializable {
+public class CollectorMessage implements Serializable {
 
 	double sum = 0.0;
 	
-	public SumMessage() {
+	public CollectorMessage() {
 	}
 
-	public SumMessage(double sum) {
+	public CollectorMessage(double sum) {
 		super();
 		this.sum = sum;
 	}

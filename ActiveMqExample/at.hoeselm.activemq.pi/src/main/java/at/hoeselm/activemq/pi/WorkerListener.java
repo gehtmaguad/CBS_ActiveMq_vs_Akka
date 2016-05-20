@@ -14,26 +14,6 @@ import javax.jms.Session;
 import org.apache.activemq.ActiveMQConnectionFactory;
 
 public class WorkerListener implements MessageListener {
-
-	public WorkerListener() {
-		try {
-			// run initializer method
-			this.initialize();
-        } catch (Exception e) {
-			// printout statement
-			System.out.println("exception occured: " + e.getMessage());
-		}
-	}
-	
-	protected void finalize () {
-		try {
-			// run terminate function
-			this.terminate();
-        } catch (Exception e) {
-			// printout statement
-			System.out.println("exception occured: " + e.getMessage());
-		}
-	}
 	
 	// variable definitions
 	private final String messageBrokerUrl = "tcp://localhost:61616"; // URL of message broker
@@ -41,10 +21,10 @@ public class WorkerListener implements MessageListener {
 	private Connection connection; // connection object
 	private Session session; // session object
 	private Destination destination; // destination object
-	private MessageProducer producer;
-	
-	// initialization method, run before execution
-	public void initialize() throws Exception {
+	private MessageProducer producer;	
+
+	public WorkerListener() throws Exception {
+		
 		// create a ActiveMQConnection Factory instance
 		connectionFactory = new ActiveMQConnectionFactory(messageBrokerUrl);
 		// create connection to the message broker
@@ -57,10 +37,9 @@ public class WorkerListener implements MessageListener {
 		
 		// create a message producer using the session object
 		producer = session.createProducer(destination);
-	}	
+	}
 	
-	// termination method, run after execution
-	public void terminate() throws Exception {
+	protected void finalize () throws Exception {
 		
 		// close the message producer
 		producer.close();
@@ -69,7 +48,7 @@ public class WorkerListener implements MessageListener {
 		if (connection != null) {
 			connection.close();
 		}
-	}	
+	}
 	
     // message listener
     public void onMessage(Message message) {
@@ -78,21 +57,15 @@ public class WorkerListener implements MessageListener {
         	ObjectMessage object_message = (ObjectMessage) message;
             WorkerMessage worker_message = (WorkerMessage) object_message.getObject();  
     		int message_id = object_message.getIntProperty("message_id");
-            double sum = calculate_pie(worker_message);
-            
-			// printout info statement
-			System.out.println("worker retrieved message number: " + message_id );            
+            double sum = calculate_pie(worker_message);      
             
     		// create sum message
-    		SumMessage sum_message = new SumMessage(sum);
-    		ObjectMessage sum_object_message = session.createObjectMessage(sum_message);
-    		sum_object_message.setIntProperty("message_id", message_id);
+    		CollectorMessage collector_message = new CollectorMessage(sum);
+    		ObjectMessage collector_object_message = session.createObjectMessage(collector_message);
+    		collector_object_message.setIntProperty("message_id", message_id);
 
-    		// send message
-    		producer.send(sum_object_message);	
-    		
-			// printout info statement
-			System.out.println("worker sent message number: " + message_id );
+    		// send sum message
+    		producer.send(collector_object_message);	
             
         } catch (Exception e) {
 			// printout statement
@@ -115,11 +88,6 @@ public class WorkerListener implements MessageListener {
 	    	// result times 4 because we want pi and not pi/4
 			sum += 4.0 * (1 - (i % 2) * 2) / (2 * i + 1);
 		}
-		
-		System.out.println("start_value: " + start_value);
-		System.out.println("number_of_elements: " + number_of_elements);
-		System.out.println("sum: " + sum);
-		System.out.println("\n");
 		
 		return sum;
 	}

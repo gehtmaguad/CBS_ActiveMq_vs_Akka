@@ -9,17 +9,25 @@ import javax.jms.TextMessage;
 
 import org.apache.activemq.ActiveMQConnectionFactory;
 
-public class Creator {
+public class Creator implements Runnable {
 
 	// variable definitions
-	private final String messageBrokerUrl = "tcp://localhost:61616"; // URL of message broker
-	private ActiveMQConnectionFactory connectionFactory; // factory / connection handler
+	private final String messageBrokerUrl = "tcp://localhost:61616"; // URL of
+																		// message
+																		// broker
+	private ActiveMQConnectionFactory connectionFactory; // factory / connection
+															// handler
 	private Connection connection; // connection object
 	private Session session; // session object
 	private Destination destination; // destination object
+	private MessageProducer producer; // producer object
 
-	// initialization method, run before execution
-	public void initialize() throws Exception {
+	private int start_value;
+	private int end_value;
+	private int message_count;
+
+	public Creator(int start_value, int end_value, int message_count) throws Exception {
+
 		// create a ActiveMQConnection Factory instance
 		connectionFactory = new ActiveMQConnectionFactory(messageBrokerUrl);
 		// create connection to the message broker
@@ -29,10 +37,21 @@ public class Creator {
 		session = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
 		// messages are send to the Work queue
 		destination = session.createQueue("Queue.Work");
+
+		// create a message producer using the session object
+		producer = session.createProducer(destination);
+
+		this.start_value = start_value;
+		this.end_value = end_value;
+		this.message_count = message_count;
 	}
 
 	// termination method, run after execution
-	public void terminate() throws Exception {
+	protected void finalize() throws Exception {
+
+		// close the message producer
+		producer.close();
+
 		// close an active connection
 		if (connection != null) {
 			connection.close();
@@ -40,56 +59,33 @@ public class Creator {
 	}
 
 	// execution method
-	public void execute(int start_value, int end_value, int message_count) throws Exception {
+	public void run() {
 
-		// create a message producer using the session object
-		MessageProducer producer = session.createProducer(destination);
-
-		// calculate the number of elements being calculated by each consumer
-		int number_of_elements = end_value / message_count;
-
-		// send messages
-		for (int i = 0; i < message_count; ++i) {
-
-			// create message
-			WorkerMessage worker_message = new WorkerMessage(start_value, number_of_elements);
-			ObjectMessage object_message = session.createObjectMessage(worker_message);
-			object_message.setIntProperty("message_id", i);
-			
-			// send message
-			producer.send(object_message);
-
-			// calculate new start value
-			start_value += number_of_elements;
-			
-			// printout info statement
-			System.out.println("creator sent message number: " + i );
-		}
-
-		// close the message producer
-		producer.close();
-	}
-
-	// main method
-	public static void main(String[] args) {
-		// create an instance of this class
-		Creator creator = new Creator();
-		// printout info statement
-		System.out.println("creator component started.");
-
-		// execution wrapped in try/catch block
 		try {
-			creator.initialize();
-			creator.execute(0, 10000, 10);
-			creator.terminate();
-		// exception handling
-		} catch (Exception e) {
-			// printout statement
-			System.out.println("exception occured: " + e.getMessage());
-		}
 
-		// printout statement
-		System.out.println("creator component finished.");
+			// calculate the number of elements being calculated by each
+			// consumer
+			int number_of_elements = end_value / message_count;
+
+			// send messages
+			for (int i = 0; i < message_count; ++i) {
+
+				// create message
+				WorkerMessage worker_message = new WorkerMessage(start_value, number_of_elements);
+				ObjectMessage object_message = session.createObjectMessage(worker_message);
+				object_message.setIntProperty("message_id", i);
+
+				// send message
+				producer.send(object_message);
+
+				// calculate new start value
+				start_value += number_of_elements;
+
+			}
+			
+		} catch (Exception ex) {
+			System.out.println("Exception: " + ex.getMessage());
+		}
 	}
 
 }
