@@ -9,11 +9,11 @@ import javax.jms.ObjectMessage;
 public class CollectorListener implements MessageListener {
 	
 	private double pi = 0.0;
-	private int message_count;
-	private int current_count = 0;
+	private long message_count;
+	private long current_count = 0;
 	private long start_time;
 	
-	public CollectorListener(long start_time, int message_count) {
+	public CollectorListener(long start_time, long message_count) {
 		this.message_count = message_count;
 		this.start_time = start_time;
 	}

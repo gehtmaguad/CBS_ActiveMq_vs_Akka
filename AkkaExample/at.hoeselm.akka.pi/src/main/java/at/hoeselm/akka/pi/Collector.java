@@ -5,13 +5,13 @@ import akka.actor.UntypedActor;
 public class Collector extends UntypedActor {
 	
 	private double pi = 0.0;
-	private int current_count = 0;
+	private long current_count = 0;
 	private long start_time;
-	private int actor_count = 0;
+	private long message_count = 0;
 	
-	public Collector(long start_time, int actor_count) {
+	public Collector(long start_time, long message_count) {
 		this.start_time = start_time;
-		this.actor_count = actor_count;
+		this.message_count = message_count;
 	}
 
 	// message listener
@@ -26,7 +26,7 @@ public class Collector extends UntypedActor {
 			pi += collector_message.getSum();
 			++current_count;
 		
-			if (current_count == actor_count) {
+			if (current_count == message_count) {
 
 				// calculate time
 				long end_time = System.nanoTime();

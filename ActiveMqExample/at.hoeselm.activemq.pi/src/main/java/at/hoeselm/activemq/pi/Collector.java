@@ -22,10 +22,10 @@ public class Collector implements Runnable {
 	private Destination destinationSum; // destination object
 	private int active_for_minutes = 60; // defines how long the consumer runs
 	private MessageConsumer consumer; // consumer object
-	private int message_count;
+	private long message_count;
 	private long start_time;
 
-	public Collector(long start_time, int message_count) throws Exception {
+	public Collector(long start_time, long message_count) throws Exception {
 
 		// create a ActiveMQConnection Factory instance
 		connectionFactory = new ActiveMQConnectionFactory(messageBrokerUrl);

@@ -22,11 +22,12 @@ public class Creator implements Runnable {
 	private Destination destination; // destination object
 	private MessageProducer producer; // producer object
 
-	private int start_value;
-	private int end_value;
-	private int message_count;
+	private long start_value = 0;
+	private int actor_count;
+	private long message_count;
+	private int number_of_elements_per_message;
 
-	public Creator(int start_value, int end_value, int message_count) throws Exception {
+	public Creator(int actor_count, long message_count,int number_of_elements_per_message ) throws Exception {
 
 		// create a ActiveMQConnection Factory instance
 		connectionFactory = new ActiveMQConnectionFactory(messageBrokerUrl);
@@ -41,9 +42,9 @@ public class Creator implements Runnable {
 		// create a message producer using the session object
 		producer = session.createProducer(destination);
 
-		this.start_value = start_value;
-		this.end_value = end_value;
+		this.actor_count = actor_count;
 		this.message_count = message_count;
+		this.number_of_elements_per_message = number_of_elements_per_message;
 	}
 
 	// termination method, run after execution
@@ -63,15 +64,11 @@ public class Creator implements Runnable {
 
 		try {
 
-			// calculate the number of elements being calculated by each
-			// consumer
-			int number_of_elements = end_value / message_count;
-
 			// send messages
 			for (int i = 0; i < message_count; ++i) {
 
 				// create message
-				WorkerMessage worker_message = new WorkerMessage(start_value, number_of_elements);
+				WorkerMessage worker_message = new WorkerMessage(start_value, number_of_elements_per_message);
 				ObjectMessage object_message = session.createObjectMessage(worker_message);
 				object_message.setIntProperty("message_id", i);
 
@@ -79,7 +76,7 @@ public class Creator implements Runnable {
 				producer.send(object_message);
 
 				// calculate new start value
-				start_value += number_of_elements;
+				start_value += number_of_elements_per_message;
 
 			}
 			

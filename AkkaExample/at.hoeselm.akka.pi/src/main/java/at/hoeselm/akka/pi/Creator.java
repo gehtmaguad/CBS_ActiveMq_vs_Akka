@@ -8,28 +8,26 @@ import akka.routing.RoundRobinRouter;
 
 public class Creator extends UntypedActor {
 
-	private int start_value;
-	private int end_value;
+	private long start_value = 0;
 	private int actor_count;
-	private int number_of_elements;
+	private long message_count;
+	private int number_of_elements_per_message;
 
 	private ActorRef workers;
 	private ActorRef collector;
 
-	public Creator(final long start_time, int start_value, int end_value, final int actor_count) {
+	public Creator(final long start_time, final int actor_count, 
+			final long message_count, final int number_of_elements_per_message) {
 
 		// initialize variables
-		this.start_value = start_value;
-		this.end_value = end_value;
 		this.actor_count = actor_count;
-
-		// calculate the number of elements being calculated by each consumer
-		this.number_of_elements = this.end_value / this.actor_count;
+		this.message_count = message_count;
+		this.number_of_elements_per_message = number_of_elements_per_message;
 
 		// create the collector actor
 		collector = this.getContext().actorOf(new Props(new UntypedActorFactory() {
 			public UntypedActor create() {
-				return new Collector(start_time, actor_count);
+				return new Collector(start_time, message_count);
 			}
 		}),"collector");
 
@@ -49,13 +47,13 @@ public class Creator extends UntypedActor {
 		if (message instanceof StartMessage) {
 
 			// send messages
-			for (int i = 0; i < actor_count; ++i) {
+			for (int i = 0; i < message_count; ++i) {
 
 				// create message
-				WorkerMessage worker_message = new WorkerMessage(start_value, number_of_elements);
+				WorkerMessage worker_message = new WorkerMessage(start_value, number_of_elements_per_message);
 
 				// calculate new start value
-				start_value += number_of_elements;
+				start_value += number_of_elements_per_message;
 
 				// send message
 				workers.tell(worker_message);

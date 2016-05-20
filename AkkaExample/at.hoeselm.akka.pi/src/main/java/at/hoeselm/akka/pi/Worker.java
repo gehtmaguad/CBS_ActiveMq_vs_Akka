@@ -15,7 +15,7 @@ public class Worker extends UntypedActor {
 	public void onReceive(Object message) {
 		// listen for worker messages
 		if (message instanceof WorkerMessage) {
-			
+
 			// parse worker message and calculate result
 			WorkerMessage worker_message = (WorkerMessage) message;
 			double sum = calculate_pie(worker_message);   			
@@ -36,11 +36,11 @@ public class Worker extends UntypedActor {
 	private double calculate_pie(WorkerMessage worker_message) {
 		
 		// initialize variables
-        int start_value = worker_message.get_start_value();
-        int number_of_elements = worker_message.get_number_of_elements();
+        long start_value = worker_message.get_start_value();
+        long number_of_elements = worker_message.get_number_of_elements();
 		double sum = 0.0;
 		
-		for(int i = start_value * number_of_elements;
+		for(long i = start_value * number_of_elements;
 			i<= ((start_value + 1) * number_of_elements - 1); i++ ) {
 			
 	    	// dividend: (1 - (i % 2) * 2) --> -1 for odd numbers and 1 for even numbers

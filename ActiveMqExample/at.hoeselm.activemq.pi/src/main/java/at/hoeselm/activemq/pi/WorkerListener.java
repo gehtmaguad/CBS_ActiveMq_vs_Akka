@@ -76,11 +76,11 @@ public class WorkerListener implements MessageListener {
     // calculate number pie
 	private double calculate_pie(WorkerMessage worker_message) {
 		
-        int start_value = worker_message.get_start_value();
-        int number_of_elements = worker_message.get_number_of_elements();
+        long start_value = worker_message.get_start_value();
+        long number_of_elements = worker_message.get_number_of_elements();
 		double sum = 0.0;
 
-		for(int i = start_value * number_of_elements;
+		for(long i = start_value * number_of_elements;
 			i<= ((start_value + 1) * number_of_elements - 1); i++ ) {
 			
 	    	// dividend: (1 - (i % 2) * 2) --> -1 for odd numbers and 1 for even numbers
