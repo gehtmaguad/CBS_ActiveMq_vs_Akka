@@ -14,7 +14,7 @@ public class App {
 
 		// define parameters for execution
 		final int actor_count = 100;
-		final long message_count = 10000;
+		final long message_count = 100000;
 		final int number_of_elements_per_message = 1000000;
 		
 		// Create an Akka system

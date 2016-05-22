@@ -10,9 +10,9 @@ public class App {
 			
 			/** creator */
 			// define parameters for execution
-			final int actor_count = 1;
+			final int actor_count = 100;
 			final long message_count = 100000;
-			final int number_of_elements_per_message = 1000000;
+			final int number_of_elements_per_message = 10;
 
 			// create an instance of this class
 			(new Thread(new Creator(message_count, number_of_elements_per_message))).start();
