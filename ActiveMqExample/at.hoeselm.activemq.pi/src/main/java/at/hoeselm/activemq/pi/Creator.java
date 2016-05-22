@@ -23,11 +23,10 @@ public class Creator implements Runnable {
 	private MessageProducer producer; // producer object
 
 	private long start_value = 0;
-	private int actor_count;
 	private long message_count;
 	private int number_of_elements_per_message;
 
-	public Creator(int actor_count, long message_count,int number_of_elements_per_message ) throws Exception {
+	public Creator(long message_count,int number_of_elements_per_message ) throws Exception {
 
 		// create a ActiveMQConnection Factory instance
 		connectionFactory = new ActiveMQConnectionFactory(messageBrokerUrl);
@@ -42,7 +41,6 @@ public class Creator implements Runnable {
 		// create a message producer using the session object
 		producer = session.createProducer(destination);
 
-		this.actor_count = actor_count;
 		this.message_count = message_count;
 		this.number_of_elements_per_message = number_of_elements_per_message;
 	}

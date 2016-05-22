@@ -13,9 +13,9 @@ public class App {
 		final long start_time = System.nanoTime();
 
 		// define parameters for execution
-		final int actor_count = 1000;
-		final long message_count = 1000000;
-		final int number_of_elements_per_message = 100;
+		final int actor_count = 100;
+		final long message_count = 10000;
+		final int number_of_elements_per_message = 1000000;
 		
 		// Create an Akka system
 		ActorSystem system = ActorSystem.create("PiCalculation");
